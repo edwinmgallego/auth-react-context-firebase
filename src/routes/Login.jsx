@@ -10,10 +10,12 @@ const Login = () => {
 
 
     const handleSubmitLogin=async (e)=>{
+        console.log('data event ->_ :',e)
         e.preventDefault();
         try {
             await loginUser(email,password)
-            console.log("usuario logueado")
+            console.log("usuario logueado");
+            navega("/");
         } catch (error) {
             console.log(error.code)
             

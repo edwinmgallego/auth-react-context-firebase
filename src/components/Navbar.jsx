@@ -6,6 +6,7 @@ const Navbar = () => {
     const{user,signOutUser}=useContext(UserContext);
     const handleClicklogOut= async()=>{
         try {
+            console.log("")
             await signOutUser();
             
         } catch (error) {
