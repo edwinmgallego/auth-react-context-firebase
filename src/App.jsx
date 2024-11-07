@@ -8,7 +8,7 @@ import { UserContext } from './context/UserProvider'
 import './App.css'
 import Navbar from './components/navbar'
 import RequireAuth from './components/RequireAuth'
-import Register from './components/Register'
+import Register from './routes/Register'
 
 function App() {
   const [count, setCount] = useState(0)
