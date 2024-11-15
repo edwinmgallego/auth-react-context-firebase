@@ -1,7 +1,15 @@
 import React,{useContext,useState} from 'react'
-import { UserContext } from '../context/UserProvider'
+import  {UserContext}  from '../context/UserProvider'
 import { useNavigate } from 'react-router-dom';
 import {useForm} from 'react-hook-form'
+import { formValidate } from '../utils/formValidate';
+import { erroresFirebase } from '../utils/erroresFirebase';
+
+
+import FromInput from '../components/FormInput';
+import FormError from '../components/FormError';
+import Title from '../components/Title';
+import Button from '../components/Button';
 
 const Register = () => {
    // const [email,setEmail]= useState("emgallego@uao.edu.co");
@@ -9,11 +17,13 @@ const Register = () => {
     const {registerUser} =useContext(UserContext);
   const navegate = useNavigate();
   const {register,handleSubmit,formState:{errors},getValues,}=useForm();
+  const {required, patternEmail,minLength,validateTrim,validateEquals}= formValidate();
 
  const  onSubmmit=async({email,password})=>{
     console.log("procesando formulario--->_ ",email,password);
     try {
         await registerUser(email,password)
+        console.log("procesando formulario--->_ ",email,password);
         
     } catch (error) {
         console.log(error.code);
@@ -39,9 +49,9 @@ const Register = () => {
   return (
 
     <>
-    <div>Register</div>
+    <Title text="Register"/>
     <form  onSubmit={handleSubmit(onSubmmit)}>
-        <input 
+        <FormInput 
         type="email" 
         name="" 
         id="" 
@@ -49,58 +59,55 @@ const Register = () => {
         
         {...register(
             "email",{
-             required:{
-                value: true,
-                message:" el campo es obligatorio"
-             },
-             pattern: {
-                value:  /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message:"formato de email incorrecto"
-             }
+             required,
+             pattern: patternEmail,
             }
         )}
-        /*value={email} 
-        onChange={(e)=>setEmail(e.target.value)}*//>
+        label="Ingresa tu correo"
+        error ={errors.email}
+       >
+       <FormError error= {errors.email}/>
+       </FormInput>
 
-        {errors.email && <p>{errors.email.message}</p>}
-        <input 
+        
+        <FormInput 
         type="password" 
         name="" 
         id=""
         placeholder='password' 
         {...register(
             "password",{
-                required:{
-                    value: true,
-                    message:"la contraseña es obligatoria"
-                },
-                minLength:{
-                    value: 8,
-                    message:"la contraseña debe tener almenos 8 caracteres"
-                }
+                required,
+                minLength,
+                validate: validateTrim,
             }
         )}
-       /* value={password} 
-        onChange={(e)=>setPasword(e.target.value)} *//>
+        label="ingresa tu password"
+        error= {errors.password}
+       >
+<FormError error= {errors.password}/>
+
+        </FormInput>
 
 
-<input 
+<FromInput 
         type="password" 
         name="" 
         id=""
         placeholder='password' 
         {...register(
             "password2",{
-                required:"la contraseña es obligatoria",
-                validate:{
-                    equals:(v)=>{v=== getValues("password")||"no coincide las contraseñas"}
-                },
+                
+                validate:validateEquals(getValues("password2"))
 
             }
         )}
-       /* value={password} 
-        onChange={(e)=>setPasword(e.target.value)} *//>
-        {errors.password2 && <p>{errors.password2.message}</p>}
+        label ="repite contraseña"
+        error ={errors.password2}
+       >
+        <FormError error= {errors.password}/>
+       </FromInput>
+      
         <button type="submit">Enviar</button>
     </form>
     </>
